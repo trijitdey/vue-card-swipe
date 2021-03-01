@@ -4,7 +4,12 @@
       <!-- 此处没有直接使用 <slot></slot>，而是根据插槽生成了一个数组 cards，原因如下：
       1. 传入的一系列卡片需要进行反转排序，以让第一张卡片能展示在最前面
       2. 需要将首张卡片移动到末尾，借助数组更容易实现-->
-      <vnode v-for="(item, index) in cards" :vnode="item" :index="index" :key="`vnode-${index}`" />
+      <vnode
+        v-for="(item, index) in cards"
+        :vnode="item"
+        :index="index"
+        :key="`vnode-${index}`"
+      />
     </div>
     <div
       class="card-swipe__indicators"
@@ -14,7 +19,7 @@
       <i
         v-for="(item, index) in cards"
         :key="`indicator-${index}`"
-        :class="{active: index + 1 === currentIndex}"
+        :class="{ active: index + 1 === currentIndex }"
       ></i>
     </div>
   </div>
@@ -34,33 +39,33 @@ export default {
           vnode.key = `card-swipe-key-${ctx.props.index + 1}`;
         }
         return vnode;
-      }
-    }
+      },
+    },
   },
   props: {
     // 卡片堆叠方向，left: 卡片向左堆叠；right: 卡片向右堆叠；center: 卡片左右堆叠
     stack: {
       type: String,
-      default: "center"
+      default: "center",
     },
 
     // 最大拖动距离，小于该距离卡片恢复，大于该距离切到下张卡片
     maxDistance: {
       type: Number,
-      default: 60
+      default: 60,
     },
 
     // 卡片宽高比
     ratio: {
       type: Number,
-      default: 2
+      default: 2,
     },
 
     // 是否显示计数器
     showIndicators: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data() {
     return {
@@ -70,8 +75,8 @@ export default {
       wrapCls: {
         left: this.stack === "left",
         right: this.stack === "right",
-        center: this.stack === "center"
-      }
+        center: this.stack === "center",
+      },
     };
   },
   created() {
@@ -80,7 +85,7 @@ export default {
     if (vnodes && vnodes.length) {
       // 过滤掉非法的插槽内容
       vnodes = vnodes.filter(
-        vnode => vnode && vnode.tag && /card-swipe-item$/.test(vnode.tag)
+        (vnode) => vnode && vnode.tag && /card-swipe-item$/.test(vnode.tag)
       );
 
       // 反转vnode，这样最后一张卡片才能显示在最前面
@@ -141,7 +146,7 @@ export default {
     cardsStyle() {
       return {
         width: this.cardsWidth,
-        paddingBottom: this.cardsPadding
+        paddingBottom: this.cardsPadding,
       };
     },
 
@@ -163,7 +168,7 @@ export default {
         num = 0;
       }
       return `${num}px`;
-    }
+    },
   },
   methods: {
     onResume() {
@@ -171,24 +176,41 @@ export default {
     },
     onChange(lastIndex) {
       this.$emit("change", lastIndex, this.currentIndex);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="postcss">
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v7.0.29,
+* Autoprefixer: v9.7.6
+* Browsers: last 4 version
+*/
+
 .card-swipe {
   &__wrapper {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
     flex: 1;
     position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
   }
   &__wrapper.center {
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
   }
   &__wrapper.left {
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
     justify-content: flex-end;
   }
   &__wrapper.right {
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
     justify-content: flex-start;
   }
   &__cards {
@@ -197,9 +219,14 @@ export default {
   }
   &-item {
     position: absolute;
+    -webkit-transition: all 0.5s;
+    -o-transition: all 0.5s;
     transition: all 0.5s;
     height: 100%;
     width: 100%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
     cursor: move;
   }
@@ -207,47 +234,65 @@ export default {
   &__wrapper.center &-item:nth-last-child(2),
   &__wrapper.center .draging &-item:nth-last-child(3) {
     width: calc(100% + 12px);
+    -webkit-transform: translate(-6px, 0) scaleY(0.92);
+    -ms-transform: translate(-6px, 0) scaleY(0.92);
     transform: translate(-6px, 0) scaleY(0.92);
     opacity: 0.5;
   }
   &__wrapper.center &-item:nth-last-child(3),
   &__wrapper.center .draging &-item:nth-last-child(4) {
     width: calc(100% + 18px);
+    -webkit-transform: translate(-9px, 0) scaleY(0.85);
+    -ms-transform: translate(-9px, 0) scaleY(0.85);
     transform: translate(-9px, 0) scaleY(0.85);
     opacity: 0.3;
   }
   &__wrapper.center .draging &-item:nth-last-child(2) {
     width: 100%;
+    -webkit-transform: translate(0, 0) scaleY(1);
+    -ms-transform: translate(0, 0) scaleY(1);
     transform: translate(0, 0) scaleY(1);
     opacity: 1;
   }
 
   &__wrapper.right &-item:nth-last-child(2),
   &__wrapper.right .draging &-item:nth-last-child(3) {
+    -webkit-transform: translate(6px, 0) scaleY(0.92);
+    -ms-transform: translate(6px, 0) scaleY(0.92);
     transform: translate(6px, 0) scaleY(0.92);
     opacity: 0.5;
   }
   &__wrapper.right &-item:nth-last-child(3),
   &__wrapper.right .draging &-item:nth-last-child(4) {
+    -webkit-transform: translate(9px, 0) scaleY(0.82);
+    -ms-transform: translate(9px, 0) scaleY(0.82);
     transform: translate(9px, 0) scaleY(0.82);
     opacity: 0.3;
   }
   &__wrapper.right .draging &-item:nth-last-child(2) {
+    -webkit-transform: translate(0, 0) scaleY(1);
+    -ms-transform: translate(0, 0) scaleY(1);
     transform: translate(0, 0) scaleY(1);
     opacity: 1;
   }
 
   &__wrapper.left &-item:nth-last-child(2),
   &__wrapper.left .draging &-item:nth-last-child(3) {
+    -webkit-transform: translate(-6px, 0) scaleY(0.92);
+    -ms-transform: translate(-6px, 0) scaleY(0.92);
     transform: translate(-6px, 0) scaleY(0.92);
     opacity: 0.5;
   }
   &__wrapper.left &-item:nth-last-child(3),
   &__wrapper.left .draging &-item:nth-last-child(4) {
+    -webkit-transform: translate(-9px, 0) scaleY(0.82);
+    -ms-transform: translate(-9px, 0) scaleY(0.82);
     transform: translate(-9px, 0) scaleY(0.82);
     opacity: 0.3;
   }
   &__wrapper.left .draging &-item:nth-last-child(2) {
+    -webkit-transform: translate(0, 0) scaleY(1);
+    -ms-transform: translate(0, 0) scaleY(1);
     transform: translate(0, 0) scaleY(1);
   }
 
